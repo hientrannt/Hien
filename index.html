@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <!-- Giữ nguyên phần head như cũ -->
+  <base target="_top">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>FinSmart</title>
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+
+  <!-- Giữ nguyên toàn bộ phần <style> của bạn -->
+  <style>
+    /* COPY TOÀN BỘ CSS CỦA BẠN VÀO ĐÂY - TÔI GIỮ NGUYÊN */
+  </style>
+</head>
+
+<body>
+  <!-- Giữ nguyên toàn bộ HTML body của bạn -->
+  <!-- ... -->
+
+  <script>
+    // ===== THÊM BIẾN TOÀN CỤC CHO THÁNG LỊCH =====
+    var currentCalendarMonth = new Date().getMonth() + 1; // 1-12
+    var currentCalendarYear = new Date().getFullYear();
+
+    // ... Giữ nguyên tất cả code JavaScript khác ...
+
+    // ===== SỬA HÀM loadMonthCalendar =====
+    function loadMonthCalendar() {
+      // SỬA: Sử dụng biến toàn cục thay vì đọc từ dropdown không tồn tại
+      var month = currentCalendarMonth;
+      var year = currentCalendarYear;
+
+      console.log('Loading calendar:', month, '/', year);
+
+      // Cập nhật label hiển thị
+      var monthNames = ['Tháng 1', 'Tháng 2', 'Tháng 3', 'Tháng 4', 'Tháng 5', 'Tháng 6',
+                        'Tháng 7', 'Tháng 8', 'Tháng 9', 'Tháng 10', 'Tháng 11', 'Tháng 12'];
+      var labelElement = document.getElementById('currentMonthLabel');
+      if (labelElement) {
+        labelElement.textContent = monthNames[month - 1] + ' ' + year;
+      }
+
+      // KIỂM TRA ELEMENT TỒN TẠI
+      var calendarElement = document.getElementById('monthCalendar');
+      if (!calendarElement) {
+        console.error('Element #monthCalendar not found!');
+        alert('Lỗi: Không tìm thấy element hiển thị lịch. Vui lòng kiểm tra lại code HTML.');
+        return;
+      }
+
+      // Hiển thị loading
+      calendarElement.innerHTML = '<div class="loading">Đang tải lịch...</div>';
+
+      // Tạo timeout handler
+      var timeoutId = setTimeout(function() {
+        console.error('Request timeout');
+        calendarElement.innerHTML = '<div class="event-empty">Yêu cầu hết thời gian. Vui lòng thử lại.</div>';
+      }, 30000);
+
+      // Gọi server
+      google.script.run
+        .withSuccessHandler(function(result) {
+          clearTimeout(timeoutId);
+
+          console.log('Response received:', result);
+
+          if (!result) {
+            calendarElement.innerHTML = '<div class="event-empty">Không nhận được dữ liệu từ server</div>';
+            return;
+          }
+
+          if (result.success) {
+            console.log('Events:', result.events ? result.events.length : 0);
+            displayCalendarGrid(result.events, month, year);
+          } else {
+            calendarElement.innerHTML = '<div class="event-empty">Lỗi: ' + (result.error || 'Không rõ') + '</div>';
+          }
+        })
+        .withFailureHandler(function(error) {
+          clearTimeout(timeoutId);
+          console.error('Request failed:', error);
+          calendarElement.innerHTML = '<div class="event-empty">Lỗi kết nối: ' + (error.message || error) + '</div>';
+        })
+        .getCalendarMonth(month, year);
+    }
+
+    // ===== SỬA HÀM setupMonthCalendar =====
+    function setupMonthCalendar() {
+      console.log('setupMonthCalendar');
+
+      // Khởi tạo biến toàn cục
+      var today = new Date();
+      currentCalendarMonth = today.getMonth() + 1;
+      currentCalendarYear = today.getFullYear();
+
+      // Nút previous month
+      var prevBtn = document.getElementById('btnPrevMonth');
+      if (prevBtn) {
+        prevBtn.addEventListener('click', function() {
+          currentCalendarMonth--;
+          if (currentCalendarMonth < 1) {
+            currentCalendarMonth = 12;
+            currentCalendarYear--;
+          }
+          loadMonthCalendar();
+        });
+      }
+
+      // Nút next month
+      var nextBtn = document.getElementById('btnNextMonth');
+      if (nextBtn) {
+        nextBtn.addEventListener('click', function() {
+          currentCalendarMonth++;
+          if (currentCalendarMonth > 12) {
+            currentCalendarMonth = 1;
+            currentCalendarYear++;
+          }
+          loadMonthCalendar();
+        });
+      }
+    }
+
+    // ===== SỬA HÀM goToCurrentMonth =====
+    function goToCurrentMonth() {
+      var today = new Date();
+      currentCalendarMonth = today.getMonth() + 1;
+      currentCalendarYear = today.getFullYear();
+      loadMonthCalendar();
+    }
+
+    // ... Giữ nguyên tất cả code JavaScript còn lại ...
+  </script>
+</body>
+</html>
