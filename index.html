@@ -69,12 +69,6 @@
     font-size: 0.85em;
     font-style: italic;
     display: inline;
-    margin-left: 3px;
-  }
-
-  .event-location:before {
-    content: "📍 ";
-    font-style: normal;
   }
   </style>
 
@@ -260,14 +254,10 @@
             // 3. Sự kiện - PHẦN SỬA ĐỔI CHÍNH
             var eventsCount = (eventsByDate[day] && eventsByDate[day].length) ? eventsByDate[day].length : 0;
             if (isCurrentMonth && eventsCount > 0) {
-              if (eventsCount > 3) {
-                calendarHTML += '<div class="events-count">+' + eventsCount + '</div>';
-              }
-
               calendarHTML += '<div class="grid-day-events">';
 
-              // Hiển thị tối đa 3 sự kiện
-              eventsByDate[day].slice(0, 3).forEach(function(event) {
+              // Hiển thị tất cả sự kiện
+              eventsByDate[day].forEach(function(event) {
                 var timeStr = event.time ? event.time.toString().trim() : '';
                 var content = event.content || '';
                 var location = event.location || '';
@@ -289,13 +279,13 @@
                 var eventTitle = '';
                 if (displayTime) eventTitle += displayTime + ' --> ';
                 eventTitle += content;
-                if (location) eventTitle += ' 📍 ' + location;
+                if (location) eventTitle += ' - ' + location;
 
-                // Hiển thị: Giờ --> Nội dung 📍 Địa điểm
+                // Hiển thị: Giờ --> Nội dung - Địa điểm
                 calendarHTML += '<div class="grid-event-item" title="' + eventTitle.replace(/"/g, '&quot;') + '">';
 
                 if (displayTime) {
-                  calendarHTML += '<span class="event-time">' + displayTime + ' → </span>';
+                  calendarHTML += '<span class="event-time">' + displayTime + ' --> </span>';
                 }
 
                 if (displayContent) {
@@ -303,7 +293,7 @@
                 }
 
                 if (displayLocation) {
-                  calendarHTML += '<span class="event-location">' + displayLocation.replace(/</g, '&lt;') + '</span>';
+                  calendarHTML += '<span class="event-location"> - ' + displayLocation.replace(/</g, '&lt;') + '</span>';
                 }
 
                 calendarHTML += '</div>';
