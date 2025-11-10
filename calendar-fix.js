@@ -26,38 +26,31 @@ if (isCurrentMonth && eventsCount > 0) {
       }
     }
 
-    // Rút gọn content nếu quá dài
+    // Hiển thị đầy đủ content và location - KHÔNG rút gọn
     var displayContent = content;
-    if (displayContent.length > 30) {
-      displayContent = displayContent.substring(0, 30) + '...';
-    }
+    var displayLocation = location;
 
     // Tạo title cho tooltip
     var eventTitle = '';
-    if (displayTime) eventTitle += displayTime + ' ';
+    if (displayTime) eventTitle += displayTime + ' --> ';
     eventTitle += content;
-    if (location) eventTitle += ' - ' + location;
+    if (location) eventTitle += ' 📍 ' + location;
 
-    // Hiển thị: Giờ + Nội dung + Địa điểm (nếu có)
+    // Hiển thị: Giờ --> Nội dung 📍 Địa điểm
     calendarHTML += '<div class="grid-event-item" title="' + eventTitle.replace(/"/g, '&quot;') + '">';
 
-    // 1. Hiển thị giờ (màu xanh, tô đậm)
+    // 1. Hiển thị giờ (màu xanh, tô đậm) với mũi tên
     if (displayTime) {
-      calendarHTML += '<span class="event-time">' + displayTime + '</span>';
+      calendarHTML += '<span class="event-time">' + displayTime + ' → </span>';
     }
 
-    // 2. Hiển thị nội dung (màu đen)
+    // 2. Hiển thị nội dung đầy đủ (màu đen)
     if (displayContent) {
       calendarHTML += '<span class="event-content">' + displayContent.replace(/</g, '&lt;') + '</span>';
     }
 
-    // 3. Hiển thị địa điểm (màu xám, có icon)
-    if (location) {
-      // Rút gọn location nếu quá dài
-      var displayLocation = location;
-      if (displayLocation.length > 20) {
-        displayLocation = displayLocation.substring(0, 20) + '...';
-      }
+    // 3. Hiển thị địa điểm đầy đủ (màu xám, có icon 📍)
+    if (displayLocation) {
       calendarHTML += '<span class="event-location">' + displayLocation.replace(/</g, '&lt;') + '</span>';
     }
 
