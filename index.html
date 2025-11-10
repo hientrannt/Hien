@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <base target="_top">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+
+  <title>FinSmart</title>
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <!-- Google Fonts: Roboto -->
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+  /* Giữ nguyên toàn bộ CSS cũ - chỉ thêm CSS cho event display */
+
+  /* ... [TẤT CẢ CSS CŨ Ở ĐÂY - GIỮ NGUYÊN] ... */
+
+  /* CSS MỚI CHO HIỂN THỊ SỰ KIỆN TRONG LỊCH THÁNG */
+  .grid-event-item {
+    background: #fff;
+    padding: 4px 6px;
+    margin: 2px 0;
+    border-radius: 4px;
+    font-size: 0.75em;
+    border-left: 3px solid rgba(33, 150, 243, 0.5);
+    cursor: pointer;
+    transition: all 0.14s ease;
+    line-height: 1.3;
+    box-shadow: none;
+    text-align: left;
+    width: 100%;
+    max-width: 100%;
+  }
+
+  .grid-event-item:hover {
+    background: linear-gradient(90deg, #e3f2fd, #f8f9fa);
+    border-left-color: #2196F3;
+    transform: translateX(2px);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  }
+
+  /* Định dạng giờ - MÀU XANH, TÔ ĐẬM */
+  .event-time {
+    color: #1976D2;
+    font-weight: 700;
+    font-size: 0.95em;
+    margin-right: 4px;
+    display: inline-block;
+  }
+
+  /* Định dạng nội dung - MÀU ĐEN */
+  .event-content {
+    color: #333;
+    font-weight: 500;
+    font-size: 0.9em;
+    display: inline;
+  }
+
+  /* Định dạng địa điểm - MÀU XÁM */
+  .event-location {
+    color: #666;
+    font-weight: 400;
+    font-size: 0.85em;
+    font-style: italic;
+    display: inline;
+    margin-left: 3px;
+  }
+
+  .event-location:before {
+    content: "📍 ";
+    font-style: normal;
+  }
+  </style>
+
+</head>
+
+<body>
+
+<!-- Login Panel -->
+<div id="loginPanel" class="login-panel">
+  <div class="login-container">
+    <div class="login-header">
+      <h2>FinSmart</h2>
+      <p>Quản lý tài chính cá nhân</p>
+    </div>
+    <div class="login-form">
+      <div class="form-group">
+        <label for="username">Tên đăng nhập:</label>
+        <input type="text" id="username" placeholder="Nhập tên đăng nhập" required>
+      </div>
+      <div class="form-group">
+        <label for="password">Mật khẩu:</label>
+        <input type="password" id="password" placeholder="Nhập mật khẩu" required>
+      </div>
+      <button id="loginBtn" class="login-btn ripple">Đăng nhập</button>
+      <div id="loginMessage" class="login-message"></div>
+    </div>
+  </div>
+</div>
+
+  <div class="app-container">
+    <!-- Sidebar Menu -->
+    <div class="sidebar glass-effect" id="sidebar">
+      <!-- ... [SIDEBAR CODE - GIỮ NGUYÊN] ... -->
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content" id="mainContent">
+      <div class="header glass-effect">
+        <!-- ... [HEADER CODE - GIỮ NGUYÊN] ... -->
+      </div>
+
+      <div class="page-content">
+        <!-- Tab Content: Form Nhập Liệu -->
+        <div id="content-form" class="tab-content active">
+          <!-- ... [FORM CODE - GIỮ NGUYÊN] ... -->
+        </div>
+
+        <!-- Tab Content: Sổ Quỹ -->
+        <div id="content-ledger" class="tab-content">
+          <!-- ... [LEDGER CODE - GIỮ NGUYÊN] ... -->
+        </div>
+
+        <!-- Tab Content: Calendar -->
+        <div id="content-calendar" class="tab-content">
+          <!-- ... [CALENDAR CODE - GIỮ NGUYÊN] ... -->
+        </div>
+
+        <!-- Tab Content: Birthday View -->
+        <div id="content-birthday" class="tab-content">
+          <!-- ... [BIRTHDAY CODE - GIỮ NGUYÊN] ... -->
+        </div>
+
+        <!-- Tab Content: Bank Transactions -->
+        <div id="content-transactions" class="tab-content">
+          <!-- ... [TRANSACTIONS CODE - GIỮ NGUYÊN] ... -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Theme Toggle, Modals, etc. - GIỮ NGUYÊN -->
+
+  <script>
+    // [TẤT CẢ CODE JAVASCRIPT CŨ - GIỮ NGUYÊN]
+
+    // CHỈ SỬA HÀM displayCalendarGrid - PHẦN HIỂN THỊ SỰ KIỆN
+    function displayCalendarGrid(events, month, year) {
+      console.log('displayCalendarGrid:', events.length, 'events');
+
+      var calendarElement = document.getElementById('monthCalendar');
+      if (!calendarElement) {
+        console.error('Element #monthCalendar not found in displayCalendarGrid!');
+        return;
+      }
+
+      // ... [CODE TRƯỚC ĐÓ GIỮ NGUYÊN] ...
+
+      // ============= PHẦN SỬA ĐỔI BẮT ĐẦU TỪ ĐÂY =============
+
+      function renderCalendarGrid() {
+        calendarHTML = '<table class="calendar-table" cellspacing="0" cellpadding="0">';
+
+        // Header row
+        calendarHTML += '<thead><tr>';
+        weekDayNamesHeader.forEach(function(dayName, index) {
+          var dayClass = (index === 6) ? 'sunday' : '';
+          calendarHTML += '<th class="calendar-table-header ' + dayClass + '">' + dayName + '</th>';
+        });
+        calendarHTML += '</tr></thead>';
+
+        calendarHTML += '<tbody>';
+
+        var totalCells = startDayMonday + daysInMonth + remainingDays;
+        var cellIndex = 0;
+
+        for (var week = 0; week < weeksNeeded; week++) {
+          calendarHTML += '<tr>';
+
+          for (var col = 0; col < 7; col++) {
+            var day;
+            var dayClass = 'calendar-table-day';
+            var isPrevMonth = (cellIndex < startDayMonday);
+            var isNextMonth = (cellIndex >= startDayMonday + daysInMonth);
+            var isCurrentMonth = (!isPrevMonth && !isNextMonth);
+
+            if (isPrevMonth) {
+              day = prevMonthLastDay - startDayMonday + cellIndex + 1;
+              dayClass += ' other-month';
+            } else if (isNextMonth) {
+              day = cellIndex - (startDayMonday + daysInMonth) + 1;
+              dayClass += ' other-month';
+            } else {
+              day = cellIndex - startDayMonday + 1;
+            }
+
+            var actualDate;
+            if (isPrevMonth) {
+              actualDate = new Date(year, month - 2, day);
+            } else if (isNextMonth) {
+              actualDate = new Date(year, month, day);
+            } else {
+              actualDate = new Date(year, month - 1, day);
+            }
+
+            var dayOfWeek = actualDate.getDay();
+            var dateStr = (isCurrentMonth ? day : '') + '/' + month + '/' + year;
+            var isToday = (isCurrentMonth && dateStr === todayStr);
+
+            if (isToday) dayClass += ' today';
+            if (dayOfWeek === 0) dayClass += ' sunday';
+            if (isCurrentMonth && eventsByDate[day] && eventsByDate[day].length > 0) {
+              dayClass += ' has-events';
+            }
+
+            // Lấy âm lịch
+            var lunarKey = '';
+            var lunarDate = '';
+            if (isPrevMonth) {
+              lunarKey = day + '_prev';
+              lunarDate = lunarDatesMap[lunarKey] || '';
+            } else if (isNextMonth) {
+              lunarKey = day + '_next';
+              lunarDate = lunarDatesMap[lunarKey] || '';
+            } else {
+              lunarKey = day + '_current';
+              lunarDate = lunarDatesMap[lunarKey] || '';
+              if (eventsByDate[day] && eventsByDate[day].length > 0) {
+                var firstEvent = eventsByDate[day][0];
+                if (firstEvent.lunarSpecial) {
+                  lunarDate = firstEvent.lunarSpecial;
+                }
+              }
+            }
+
+            calendarHTML += '<td class="' + dayClass + '">';
+            calendarHTML += '<div class="calendar-day-content">';
+
+            // 1. Ngày dương lịch
+            var solarDateStr = '';
+            if (isCurrentMonth) {
+              var displayDay = day < 10 ? '0' + day : day;
+              solarDateStr = displayDay;
+              calendarHTML += '<div class="grid-day-solar text-left"><strong>' + solarDateStr + '</strong></div>';
+            } else {
+              var displayDay = day < 10 ? '0' + day : day;
+              solarDateStr = displayDay;
+              calendarHTML += '<div class="grid-day-solar other-month-day text-left"><strong>' + solarDateStr + '</strong></div>';
+            }
+
+            // 2. Ngày âm lịch
+            calendarHTML += '<div class="grid-day-lunar text-center lunar-style">' + (lunarDate || '&nbsp;') + '</div>';
+
+            // 3. Sự kiện - PHẦN SỬA ĐỔI CHÍNH
+            var eventsCount = (eventsByDate[day] && eventsByDate[day].length) ? eventsByDate[day].length : 0;
+            if (isCurrentMonth && eventsCount > 0) {
+              if (eventsCount > 3) {
+                calendarHTML += '<div class="events-count">+' + eventsCount + '</div>';
+              }
+
+              calendarHTML += '<div class="grid-day-events">';
+
+              // Hiển thị tối đa 3 sự kiện
+              eventsByDate[day].slice(0, 3).forEach(function(event) {
+                var timeStr = event.time ? event.time.toString().trim() : '';
+                var content = event.content || '';
+                var location = event.location || '';
+
+                // Format time để chỉ lấy HH:mm
+                var displayTime = '';
+                if (timeStr) {
+                  var timeMatch = timeStr.match(/^(\d{1,2}:\d{2})/);
+                  if (timeMatch) {
+                    displayTime = timeMatch[1];
+                  }
+                }
+
+                // Rút gọn content nếu quá dài
+                var displayContent = content;
+                if (displayContent.length > 30) {
+                  displayContent = displayContent.substring(0, 30) + '...';
+                }
+
+                // Tạo title cho tooltip
+                var eventTitle = '';
+                if (displayTime) eventTitle += displayTime + ' ';
+                eventTitle += content;
+                if (location) eventTitle += ' - ' + location;
+
+                // Hiển thị: Giờ + Nội dung + Địa điểm (nếu có)
+                calendarHTML += '<div class="grid-event-item" title="' + eventTitle.replace(/"/g, '&quot;') + '">';
+
+                if (displayTime) {
+                  calendarHTML += '<span class="event-time">' + displayTime + '</span>';
+                }
+
+                if (displayContent) {
+                  calendarHTML += '<span class="event-content">' + displayContent.replace(/</g, '&lt;') + '</span>';
+                }
+
+                if (location) {
+                  // Rút gọn location nếu quá dài
+                  var displayLocation = location;
+                  if (displayLocation.length > 20) {
+                    displayLocation = displayLocation.substring(0, 20) + '...';
+                  }
+                  calendarHTML += '<span class="event-location">' + displayLocation.replace(/</g, '&lt;') + '</span>';
+                }
+
+                calendarHTML += '</div>';
+              });
+
+              calendarHTML += '</div>';
+            }
+
+            calendarHTML += '</div>';
+            calendarHTML += '</td>';
+
+            cellIndex++;
+          }
+
+          calendarHTML += '</tr>';
+        }
+
+        calendarHTML += '</tbody></table>';
+
+        calendarElement.innerHTML = calendarHTML;
+      }
+
+      // ... [PHẦN CÒN LẠI CỦA HÀM GIỮ NGUYÊN] ...
+    }
+
+    // [TẤT CẢ CODE JAVASCRIPT KHÁC - GIỮ NGUYÊN]
+
+  </script>
+</body>
+
+</html>

@@ -1,0 +1,55 @@
+/* CSS MỚI CHO HIỂN THỊ SỰ KIỆN TRONG LỊCH THÁNG */
+.grid-event-item {
+  background: #fff;
+  padding: 4px 6px;
+  margin: 2px 0;
+  border-radius: 4px;
+  font-size: 0.75em;
+  border-left: 3px solid rgba(33, 150, 243, 0.5);
+  cursor: pointer;
+  transition: all 0.14s ease;
+  line-height: 1.3;
+  box-shadow: none;
+  text-align: left;
+  width: 100%;
+  max-width: 100%;
+}
+
+.grid-event-item:hover {
+  background: linear-gradient(90deg, #e3f2fd, #f8f9fa);
+  border-left-color: #2196F3;
+  transform: translateX(2px);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+/* Định dạng giờ - MÀU XANH, TÔ ĐẬM */
+.event-time {
+  color: #1976D2;
+  font-weight: 700;
+  font-size: 0.95em;
+  margin-right: 4px;
+  display: inline-block;
+}
+
+/* Định dạng nội dung - MÀU ĐEN */
+.event-content {
+  color: #333;
+  font-weight: 500;
+  font-size: 0.9em;
+  display: inline;
+}
+
+/* Định dạng địa điểm - MÀU XÁM */
+.event-location {
+  color: #666;
+  font-weight: 400;
+  font-size: 0.85em;
+  font-style: italic;
+  display: inline;
+  margin-left: 3px;
+}
+
+.event-location:before {
+  content: "📍 ";
+  font-style: normal;
+}
