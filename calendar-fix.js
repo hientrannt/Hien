@@ -31,30 +31,33 @@ if (isCurrentMonth && eventsCount > 0) {
     eventTitle += content;
     if (location) eventTitle += ' - ' + location;
 
-    // Hiển thị: Giờ : Nội dung - Địa điểm
-    // Ví dụ: 16:55 : Đón SoMin và Soda - Mầm non Lộc Thọ 1
+    // Hiển thị: Giờ : Nội dung
+    //          Địa điểm
+    // Ví dụ: 07:30 : ĐỀ NGHỊ CẤP VỐN ngày 10/11/2025
+    //        Truy cập BFO:Link 02.Quản Lý Tài Chánh/36. Quản Lý Cấp Vốn/01. Yêu Cầu Cấp Vốn
     calendarHTML += '<div class="grid-event-item" title="' + eventTitle.replace(/"/g, '&quot;') + '">';
 
-    var eventLine = '';
+    // Dòng 1: Giờ : Nội dung
+    var firstLine = '';
 
     // 1. Hiển thị giờ (màu xanh, tô đậm)
     if (displayTime) {
-      eventLine += '<span class="event-time">' + displayTime + '</span>';
-      eventLine += '<span class="event-separator"> : </span>';
+      firstLine += '<span class="event-time">' + displayTime + '</span>';
+      firstLine += '<span class="event-separator"> : </span>';
     }
 
     // 2. Hiển thị nội dung đầy đủ (màu đen)
     if (displayContent) {
-      eventLine += '<span class="event-content">' + displayContent.replace(/</g, '&lt;') + '</span>';
+      firstLine += '<span class="event-content">' + displayContent.replace(/</g, '&lt;') + '</span>';
     }
 
-    // 3. Hiển thị địa điểm đầy đủ (màu xám)
+    calendarHTML += '<div>' + firstLine + '</div>';
+
+    // Dòng 2: Địa điểm (nếu có)
     if (displayLocation) {
-      eventLine += '<span class="event-separator"> - </span>';
-      eventLine += '<span class="event-location">' + displayLocation.replace(/</g, '&lt;') + '</span>';
+      calendarHTML += '<div><span class="event-location">' + displayLocation.replace(/</g, '&lt;') + '</span></div>';
     }
 
-    calendarHTML += eventLine;
     calendarHTML += '</div>';
   });
 
