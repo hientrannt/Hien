@@ -1,0 +1,20 @@
+# Xử lý PDF và hình ảnh
+PyPDF2==3.0.1
+pdf2image==1.16.3
+Pillow==10.2.0
+pytesseract==0.3.10
+
+# Gemini AI
+google-generativeai==0.3.2
+
+# Xử lý Excel
+openpyxl==3.1.2
+pandas==2.2.0
+
+# GUI
+tkinter-tooltip==2.1.0
+
+# Utilities
+python-dotenv==1.0.1
+requests==2.31.0
+tqdm==4.66.1
